@@ -1,24 +1,27 @@
-/* Reset default styles */
-* {
+
+* html,body{
   margin: 0;
   padding: 0;
+  width: 100%;
+  height: 100%;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
+  font-family:'Inter' , sans-serif;
 }
 
 body {
   display: flex;
   height: 100vh;
+  width: 100vw;
+  overflow: hidden;
   background-color: #f4f6f8;
 }
 
-/* Container Layout */
-.container {
+.layout {
   display: flex;
   width: 100%;
+  height: 100vh;
 }
 
-/* Sidebar */
 .sidebar {
   width: 300px;
   background-color: #251d74;
@@ -26,7 +29,9 @@ body {
   color: white;
   display: flex;
   flex-direction: column;
-  text-align:flex-start; ;
+  text-align:flex-start; 
+  background: linear-gradient(180deg, #1E1B4B 0%, #1E1B4B 100%);
+  color: #fff;
 }
 
 .sidebar h1 {
@@ -64,15 +69,30 @@ body {
   padding-left: 12px;
 }
 
-/* Main Content */
 .main-content {
   flex: 1;
-  padding: 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  height: 100vh;
+  background-color:#f8f9fc ;
+}
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+  }
+
+  .main-content {
+    padding: 16px;
+  }
 }
 
-/* Header */
 .header {
   display: flex;
   justify-content: space-between;
@@ -110,7 +130,6 @@ input[type="text"] {
   border-radius: 4px;
 }
 
-/* Employee Header */
 .employee-header {
   display: flex;
   justify-content: space-between;
@@ -126,11 +145,129 @@ input[type="text"] {
   align-items: center;
   gap: 15px;
 }
+.modal-dialog.modal-xl {
+  max-width: 800px;
+}
+.modal-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2d2d2d;
+  text-align: center;
+  width: 100%;
+}
+.modal-header {
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 10px;
+}
+
+.modal-content {
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  padding: 30px;
+}
+
+form .form-label {
+  font-weight: 500;
+  font-size: 14px;
+  color: #4a4a4a;
+  margin-bottom: 4px;
+}
+
+.form-control,
+.form-select {
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 14px;
+  border: 1px solid #e0e0e0;
+  background-color: #fff;
+  box-shadow: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #6c5ce7;
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+}
+
+.form-control::placeholder {
+  color: #aaa;
+}
+
+.form-check-input {
+  accent-color: #6c5ce7;
+  margin-top: 6px;
+}
+.form-check-label {
+  margin-right: 20px;
+  color: #333;
+  font-weight: 400;
+}
+
+.btn-primary {
+  background-color: #4c00ff;
+  border-radius: 12px;
+  padding: 10px 28px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #3600b3;
+}
+
+.btn-close {
+  filter: brightness(0.6);
+}
+
+.btn-secondary {
+  border-radius: 12px;
+  padding: 10px 28px;
+  font-size: 14px;
+  background-color: #f5f5f5;
+  border: none;
+  color: #333;
+}
 
 
+.row.g-3 > .col-md-3,
+.row.g-3 > .col-md-4,
+.row.g-3 > .col-md-5,
+.row.g-3 > .col-md-6,
+.row.g-3 > .col-md-12,
+.row.g-3 > .col-md-2 {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+/* Image Upload */
+input[type="file"] {
+  border: 1px dashed #ccc;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #fafafa;
+}
+
+.text-end {
+  margin-top: 20px;
+}
 
 
-/* Button */
+@media (max-width: 768px) {
+  .modal-content {
+    padding: 20px;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
+
 #addBtn {
   background-color: #2980b9;
   color: white;
@@ -144,7 +281,6 @@ input[type="text"] {
   background-color: #3498db;
 }
 
-/* Table */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -162,7 +298,50 @@ th, td {
   border-bottom: 1px solid #ddd;
 }
 
-/* Pagination */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dots-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 28px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  min-width: 120px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.dropdown-menu button {
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.dropdown-menu button:hover {
+  background-color: #f2f2f2;
+}
+
+.dropdown.show .dropdown-menu {
+  display: block;
+}
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -185,7 +364,6 @@ th, td {
   background-color: #2980b9;
 }
 
-/* Footer */
 footer {
   text-align: center;
   color: #777;
