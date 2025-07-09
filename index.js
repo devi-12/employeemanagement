@@ -18,8 +18,17 @@ async function fetchData() {
       phone: emp.phone,
       gender: emp.gender,
       dob: emp.dob,
-      country: emp.country
-    }));
+      country: emp.country,
+      qualification: emp.qualifications || "",
+      address: emp.address || "",
+      username: emp.username || emp.email?.split("@")[0] || "",
+      city: emp.city || "",
+      state: emp.state || "",
+      zip: emp.zip || "",
+      country: emp.country || ""
+}));
+
+
 
     renderTable(); // display in table
   } catch (error) {
@@ -49,7 +58,7 @@ function renderTable() {
       <td>${emp.phone}</td>
       <td>${emp.gender}</td>
       <td>${emp.dob}</td>
-      <td>${emp.country}</td>
+      <td>${emp.country}</td>0
       <td>
         <div class="dropdown">
           <button class="dots-btn" onclick="toggleDropdown(this)">...</button>
@@ -61,9 +70,11 @@ function renderTable() {
         </div>
       </td>
     `;
+    
     tableBody.appendChild(row);
   });
 }
+
 function toggleDropdown(button) {
   document.querySelectorAll(".show-on-click").forEach(menu => {
     if (menu !== button.nextElementSibling) {
@@ -81,26 +92,137 @@ window.addEventListener("click", function (e) {
     document.querySelectorAll(".show-on-click").forEach(menu => {
       menu.style.display = "none";
     });
+    
   }
 });
+
+
+
 
 // Placeholder Actions
 function viewDetails(index) {
   alert(`Viewing details of ${employees[index].name}`);
 }
+let currentViewIndex = null;
 
-function editEmployee(index) {
-  alert(`Editing ${employees[index].name}`);
+function viewDetails(index) {
+  const emp = employees[index];
+  currentViewIndex = index;
+
+  // Set details
+  document.getElementById("detail-avatar").src = `http://localhost:3000/employees/${emp.id}/avatar`;
+  document.getElementById("detail-name").innerText = emp.name;
+  document.getElementById("detail-email").innerText = emp.email;
+  document.getElementById("detail-gender").innerText = emp.gender;
+  document.getElementById("detail-dob").innerText = emp.dob;
+  document.getElementById("detail-phone").innerText = emp.phone;
+  document.getElementById("detail-qualification").innerText = emp.qualification || "N/A";
+  document.getElementById("detail-username").innerText = emp.username || emp.email.split("@")[0];
+  document.getElementById("detail-address").innerText = emp.address || "N/A";
+ 
+   
+  // Hide table and pagination
+
+// Utility function to hide the employee details section
+function hideEmployeeDetails() {
+  document.getElementById("employee-details").style.display = "none";
+  document.getElementById("employee-table-wrapper").style.display = "block";
+  document.getElementById("pagination-wrapper").style.display = "block";
+}
+  document.getElementById("employee-table-wrapper").style.display = "none";
+  document.getElementById("pagination-wrapper").style.display = "none";
+
+  // Show details section
+  document.getElementById("employee-details").style.display = "none";
+
+  
 }
 
+
+function editEmployee(index) {
+  const emp = employees[index];
+  currentViewIndex = index;
+
+  // ✅ Parse full name into salutation, first name, last name
+  const nameParts = emp.name.trim().split(" ");
+  const salutation = nameParts[0];              // Mr.
+  const firstName = nameParts[1] || "";         // Michael
+  const lastName = nameParts.slice(2).join(" "); // Johnson (handle middle names too)
+
+  // Prefill fields
+  document.getElementById("editSalutation").value = salutation;
+  document.getElementById("editFirstName").value = firstName;
+  document.getElementById("editLastName").value = lastName;
+  document.getElementById("editEmail").value = emp.email;
+  document.getElementById("editPhone").value = emp.phone;
+  document.getElementById("editDob").value = emp.dob;
+  document.getElementById("editQualification").value = emp.qualification || "N/A";
+  document.getElementById("editAddress").value = emp.address || "N/A";
+  document.getElementById("editCountry").value = emp.country || "";
+  document.getElementById("editCity").value = emp.city || "";
+  document.getElementById("editZip").value = emp.zip || "";
+
+  // Gender
+  if (emp.gender === "Male") document.getElementById("editGenderMale").checked = true;
+  else if (emp.gender === "Female") document.getElementById("editGenderFemale").checked = true;
+
+  // Avatar
+  document.getElementById("editProfilePreview").src = `http://localhost:3000/employees/${emp.id}/avatar`;
+
+  // Show modal
+  const modal = new bootstrap.Modal(document.getElementById("editEmployeeModal"));
+  modal.show();
+  
+}
+
+let deleteIndex = null;
+
 function deleteEmployee(index) {
-  if (confirm(`Delete ${employees[index].name}?`)) {
-    employees.splice(index, 1);
+  deleteIndex = index;
+  const modal = new bootstrap.Modal(document.getElementById('deleteEmployeeModal'));
+  modal.show();
+}
+
+function confirmDelete() {
+  if (deleteIndex !== null) {
+    employees.splice(deleteIndex, 1);
     renderTable();
+    deleteIndex = null;
+  }
+}
+async function confirmDelete() {
+  if (deleteIndex !== null) {
+    const emp = employees[deleteIndex];
+
+    try {
+      const response = await fetch(`http://localhost:3000/employees/${emp.id}`, {
+        method: 'DELETE'
+      });
+
+      if (!response.ok) throw new Error('Failed to delete');
+
+      // Remove locally
+      employees.splice(deleteIndex, 1);
+      renderTable();
+      deleteIndex = null;
+
+      // Hide modals/sections if necessary
+      document.getElementById("employee-details").style.display = "none";
+      document.getElementById("employee-table-wrapper").style.display = "block";
+      document.getElementById("pagination-wrapper").style.display = "block";
+    document.getElementById("employee-details").style.display = "none";
+
+      const modal = bootstrap.Modal.getInstance(document.getElementById('deleteEmployeeModal'));
+      if (modal) modal.hide();
+
+    } catch (error) {
+      console.error("Delete Error:", error);
+      alert("Failed to delete employee.");
+    }
   }
 }
 
+
 // Call fetch on page load
 fetchData();
-
 
